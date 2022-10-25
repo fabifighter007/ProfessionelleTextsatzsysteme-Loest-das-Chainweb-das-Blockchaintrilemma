@@ -1,0 +1,57 @@
+\section{Hat das Chainweb das Blockchaintrilemma gelöst?}
+\subsection{Dezentralität}
+Das Chainweb setzt auf Proof of Work. Es erlaubt jedem, ohne Einschränkungen am Netzwerk teilzuhaben. Da Miner oftmals in sogenannten Mining-Pools gemeinsam rechnen, könnte ein koordinierter Angriff auf einen solchen Pool zu einem erfolgreichen 51\%-Angriff führen. Die praktische Durchführbarkeit hängt von verschiedenen Faktoren ab. Es können sich verschiedene Pools zusammenschließen und so einen Großteil des Netzwerks kontrollieren. Abbildung \eqref{fig:chainweb_miner} vermittelt einen Eindruck über die Verteilung der Rechenleistung im Chainweb.
+
+\begin{figure}[h!]
+    \centering
+    \togglefalse{showpct}
+    \begin{tikzpicture}
+    \tikzset{lines/.style={draw=white},}
+    \pie[color = {cyan, red, blue!80, yellow, green, purple!80},
+        sum=auto, 
+        after number=,
+        text=legend,
+        style={lines}]
+    {68.03/Poolflare,17.36/Dxpool,5.01/f2pool,2.34/Poolmars,2.11/Kelepool,5.14/Unbekannt}
+    \end{tikzpicture}
+    \caption{Verteilung der Hashrate des Chainwebs auf Mining-Pools im Juni 2022. \cite{KadenaLCC.} \cite{Anedak.}}
+    \label{fig:chainweb_miner}
+\end{figure}
+
+Ein Mining-Pool besitzt weit mehr als die Hälfte der Rechenleistung. Würde der Betreiber des Pools böse Absichten entwickeln oder der Pool übernommen werden, könnte ein Angreifer das Netzwerk manipulieren. Der Punkt Dezentralität ist nur eingeschränkt erfüllt. Theoretisch könnte das Chainweb diesen Aspekt vollumfänglich erfüllen, jedoch ist damit für die Miner ein höherer Arbeitsaufwand verbunden, welcher augenscheinlich gescheut wird. Das Rechnen in einem Pool ist unkompliziert und mit geringeren Kosten verbunden. Für den Miner mag das gut sein, für das Netzwerk bedeutet das jedoch mehr Zentralisation.
+
+\subsection{Sicherheit}
+Um neue Blöcke zu generieren, wird die Hashfunktion $Blake2S\_256$ eingesetzt. Diese wurde nach dem in Kapitel \eqref{sec:pow_section} vorgestelltem Prinzip implementiert. BLAKE gilt als sehr sichere und effiziente Hashfunktion. Bei BLAKE2 handelt es sich um eine verbesserte Version von BLAKE. Sie wird unter anderem im Linux Kernel und bei OpenSSL eingesetzt. \cite{Espitau.2015} \cite{Blake2.2017}
+
+Weiter wird in jedem Block nicht nur auf den vorherigen Block einer Kette gezeigt. Zusätzlich zeigt jeder neu erstellte Block auch auf die Nachbarketten. Resultierend müsste ein potenzieller Angreifer für einen erfolgreichen 51\%-Angriff auch die parallel laufenden Ketten dominieren. Ein mögliches Szenario bei einer klassischen POW-Blockchain wurde in \eqref{sec:51attack} aufgezeigt. Der Angriff kann auch auf das Chainweb ausgeführt werden. Da jeder Block neben dem Vorgänger auf seiner Kette auch auf Nachbarketten referenziert, muss ein Angreifer deutlich mehr Aufwand betreiben:
+
+Sei $p$ die  Wahrscheinlichkeit, dass das Netzwerk einen neuen Block findet und $q$ die Wahrscheinlichkeit, dass der Angreifer einen neuen Block findet.\\
+$q_{\mu(z)}$ entspricht der Wahrscheinlichkeit für den Angreifer $\mu(z)$ Blöcke aufzuholen. Der Angreifer wäre also $z$ Blöcke hinter dem aktuellen Stand des Netzwerks. Der Sachverhalt wird in \eqref{equ:wahrscheinlichkeit_pq} dargestellt.
+
+\begin{equation}
+  q_{\mu(z)} =
+   \begin{cases}
+    1 & \text{$p \leq q$}\\
+    (q/p)^{\mu(z)} & \text{$p > q$}\\
+    \end{cases}   
+\label{equ:wahrscheinlichkeit_pq}
+\end{equation}
+\\
+Der Fortschritt des Angreifers kann durch Gleichung \eqref{equ:angreifer_fortschritt} mittels einer Poisson-Verteilung berechnet werden.
+\begin{equation}
+    \lambda = \frac{q}{p}\mu(z)
+\label{equ:angreifer_fortschritt}
+\end{equation}
+\\
+Um die Wahrscheinlichkeit zu berechnen, dass der Angreifer $z$ Blöcke aufholt, wird Formel \eqref{equ:angreifer_aufholen} verwendet.
+\begin{equation}
+    \sum_{b=0}^{\mu(z)} \frac{\lambda^{b}e^{-\lambda}}{b!} \cdot \left(\frac{q}{p}\right)^{\mu(z)-b}
+\label{equ:angreifer_aufholen}
+\end{equation}
+Es zeigt sich, dass ein Angreifer über mehrere Blöcke betrachtet keinen Erfolg haben wird. \cite{Martino.2018} \cite{Martino.2018b}
+\\
+Durch Verwendung einer sicheren Hashfunktion und zusätzliches Referieren auf verschiedene Blöcke gewährt das Chainweb Sicherheit. Zusätzlich setzt es auf Proof of Work, welches richtig eingesetzt als sehr sicher angesehen wird. \cite{Gervais.2016}
+
+
+\subsection{Skalierbarkeit}
+Nach dem experimentellen Bestimmen des Durchflusses in Abschnitt \eqref{sec:durchfluss_kette} und anschließender Übertragung auf mehrere Ketten $C$ wurde gezeigt, dass ein enorm hoher Durchfluss erreicht werden kann. Sobald der mögliche Durchfluss nicht ausreicht, kann durch das Hinzufügen neuer Ketten dieser erhöht werden. Es gibt kein Limit für die Anzahl an Ketten, solange ein passender Graph gefunden werden kann. Mögliche Zusammensetzungen sehr großer Graphen zeigt Tabelle \eqref{tab:graphentheory}. Es kann angenommen werden, dass für den in der Realität benötigten Durchfluss immer ein passender Graph mit möglichst geringem Durchmesser gefunden werden kann. \cite{Loz.2010}

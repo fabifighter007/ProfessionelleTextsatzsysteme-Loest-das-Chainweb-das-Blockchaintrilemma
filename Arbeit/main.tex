@@ -1,0 +1,108 @@
+\documentclass[conference, DIV=14]{IEEEtran}
+
+% Sammlung
+\pagestyle{plain}
+
+% Eingabecodierung
+\usepackage[utf8]{inputenc}
+
+% Sprachraum
+\usepackage[ngerman]{babel}
+
+% Schriftcodierung Europäische Zeichen
+\usepackage[T1]{fontenc}
+
+% Schrifteinstellungen
+% Vektorschrift
+\usepackage{lmodern}
+% Serifenlose Schrift 
+\renewcommand{\familydefault}{\sfdefault}
+% Mathe-Schrift ohne Serifen 
+\usepackage{sansmath}
+% aktiviert serifenlose Matheschrift  	
+\sansmath
+% harmonische Typenverteilung 							
+\usepackage{microtype}	
+
+% Code einbinden
+\usepackage{listings}
+\usepackage{minted}
+
+% Literatur einbinden
+\usepackage[babel, german=quotes]{csquotes}
+\usepackage[
+backend=biber,
+style=numeric-comp,
+block=ragged,			
+sorting=none,			
+]{biblatex}
+\addbibresource{ref_liste.bib}
+
+
+% Pie Chart
+% https://tex.stackexchange.com/questions/500362/using-pgf-pie-to-draw-pie-charts-without-labels-on-the-slices-but-still-able-to
+\usepackage{pgf-pie}
+\usepackage{etoolbox}
+\newtoggle{showpct}
+\makeatletter
+\patchcmd{\pgfpie@slice}%
+{\pgfpie@scalefont{#3}\pgfpie@numbertext{#3}}%
+{\iftoggle{showpct}{\pgfpie@scalefont{#3}\pgfpie@numbertext{#3}}{}}%
+{}{}
+\makeatother
+
+% Mathemodus
+\usepackage{amsmath,amssymb}
+\usepackage{mathtools}
+
+% Bilder einbinden
+\usepackage{graphicx}
+\graphicspath{{images/}}
+
+% Grafiken zeichen
+\usepackage{tikz}
+\usetikzlibrary{calc,arrows,positioning} 
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.7}
+
+% Zum automatischen und manuellen Erstellung von dynamischen Querverweisen in Dokumenten
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+% Tabellen
+\usepackage{tabularx}
+\usepackage{diagbox}
+
+% Lorem Ipsum
+\usepackage{lipsum}
+
+% Eigener enumerate Style
+\usepackage{enumerate}
+
+\begin{document}
+\title{Löst das Chainweb das Blockchaintrilemma?\\}
+\author{\IEEEauthorblockN{Author}
+\IEEEauthorblockA{\textit{Semester} \\
+\textit{Institution}\\
+\textit{Jahr}\\
+Ort, Land \\
+Kontakt}
+}
+
+\maketitle
+\input{chapter/abstract} 
+\input{chapter/intro} 
+\input{chapter/blockchain} 
+\input{chapter/blockchain_trilemma} 
+\input{chapter/chainweb}
+\input{chapter/chainweb_trilemma}
+\input{chapter/fazit}
+\section{Literatur}
+\printbibliography[heading=none]
+\end{document}
